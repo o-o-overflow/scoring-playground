@@ -1,6 +1,6 @@
 # Scoring Playground
 
-_Are you sick of seeing those three `P`s on top of the scoreboard?_
+_Are you sick of seeing those three **P**s on top of the scoreboard?_
 
 _Do you think the challenges scores were dropping too fast, and that
 caused stress and frustration in your team members - leading to an
