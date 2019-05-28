@@ -445,51 +445,39 @@ if test_condition:
         print ("Testing effects of parameter variations on the top %d positions"%test_value)
         for i in range(len(score_params)):
             new_params = [float(x) for x in score_params]
-            step = max(0.1, 0.01*new_params[i])
+            abs_step = max(0.1, 0.01*new_params[i])
             min_change = False
-            for j in range(500):
-                new_params[i]-=step
-                score_f = score_gen_f(*new_params)
-                for chall in challs.values():
-                    try:
-                        score_f(chall)
-                    except:
-                        print ("Warning")
-                        continue
-                for team in teams.values():
-                    team.bonus = 0
-                    bonus_f(team, *bonus_params)
-                res = dict_to_sorted_list(teams, ranking_f)
-                res = [r.name for r in res]
-                if (test_condition[0]=='new' and set(res[:test_value]) != set(baseline[:test_value])) or (test_condition[0]=="change" and res[:test_value] != baseline[:test_value]):
-                    print (" Param {0} (step {3:4.1f}): {2:8.2f} <-- {1:8.2f}".format(i+1, float(score_params[i]), new_params[i], step), end="")
-                    min_change = True
-                    break
-            
-
-            for j in range(500):
-                new_params[i]+=step
-                score_f = score_gen_f(*new_params)
-                for chall in challs.values():
-                    try:
-                        score_f(chall)
-                    except:
-                        print ("Warning")
-                        continue
-                for team in teams.values():
-                    team.bonus = 0
-                    bonus_f(team, *bonus_params)
-                res = dict_to_sorted_list(teams, ranking_f)
-                res = [r.name for r in res]
-                if (test_condition[0]=='new' and set(res[:test_value]) != set(baseline[:test_value])) or (test_condition[0]=="change" and res[:test_value] != baseline[:test_value]):
-                    if min_change:
-                        print ("  --> {0:8.2f}".format(new_params[i]))
-                    else:
-                        print (" Param {0} (step {3:4.1f}): {1:8.2f} --> {2:8.2f}".format(i+1, float(score_params[i]), new_params[i], step))
-                    break
-            else:
-                if min_change:
-                    print ("")
+            print (" Param {0} (step +-{1:4.1f}): ".format(i+1, abs_step), end="")
+            eol = False
+            for step in [-1*abs_step, abs_step]:
+                for j in range(500):
+                    new_params[i]-=step
+                    score_f = score_gen_f(*new_params)
+                    for chall in challs.values():
+                        try:
+                            score_f(chall)
+                        except:
+                            print ("Warning")
+                            continue
+                    for team in teams.values():
+                        team.bonus = 0
+                        bonus_f(team, *bonus_params)
+                    res = dict_to_sorted_list(teams, ranking_f)
+                    res = [r.name for r in res]
+                    if (test_condition[0]=='new' and set(res[:test_value]) != set(baseline[:test_value])) or (test_condition[0]=="change" and res[:test_value] != baseline[:test_value]):
+                        if step < 0:
+                            print ("{1:8.2f} <-- {0:8.2f}".format(float(score_params[i]), new_params[i]), end="")
+                            min_change = True
+                            break
+                        else:
+                            if min_change:
+                                print ("  --> {0:8.2f}".format(new_params[i]))
+                            else:
+                                print ("{0:8.2f} --> {1:8.2f}".format(float(score_params[i]), new_params[i]))
+                            eol = True
+                            break
+            if not eol:
+                print ("")
 
 else:
     score_f = score_gen_f(*score_params)

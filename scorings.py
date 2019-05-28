@@ -8,7 +8,7 @@ def score_ooo(base=100, top=500, k=0.08, j=1, time=2880):
     '''Log-based Decay formula used for the Defcon Quals in 2018 and 2019
   Format: ooo:base,top,k,j,time
   Points: @base + ( @top - @base ) / (1 + @k * Solved(@time) * Log (@j * Solved(@time)))
-  Default value: ooo:100,500,0.08,1,0'''
+  Default value: ooo:100,500,0.08,1,2880'''
     def f(chall):
         n = chall.get_solve_count(int(time))
         if n==0:
@@ -17,11 +17,21 @@ def score_ooo(base=100, top=500, k=0.08, j=1, time=2880):
             chall.points = int(int(base) + float(int(top)-int(base))/(1 + float(k)*n * math.log(float(j)*n)))
     return f
 
+def score_ctfd(base=100, top=500, decay=20, time=2880):
+    '''Parabolic function available in ctfd.
+  Format: ctfd:base,top,decay,time
+  Points: max(base, (((base - top)/(decay**2)) * (Solved(@time)**2)) + top)
+  Default value: ctfd:100,500,20,2880'''
+    def f(chall):
+        n = chall.get_solve_count(int(time))
+        chall.points = max(int(base), int(math.ceil(  (((int(base)- int(top))/(int(decay)**2)) * (n**2)) + int(top) )))
+    return f
+
 def score_ccc(base=30, top=500, k=11.92201, j=1.206069, time=2880):
     '''Exponential decay formula used by the CCC CTF.
   Format: ccc:base,top,k,j,time
   Points: @base + ( @top - @base ) / (1 + (max(0, Solved(@time)-1)/ @k) ** @j)
-  Default value: ooo:30,500,11.92291,1.206069,0'''
+  Default value: ooo:30,500,11.92291,1.206069,2880'''
     def f(chall):
         n = chall.get_solve_count(int(time))
         chall.points = int(round(int(base) + float(int(top)-int(base)) / (1 + (max(0, n - 1) / float(k)) ** float(j))))
