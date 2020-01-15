@@ -50,7 +50,7 @@ def score_time(base=30, top=500, i=0.75, n=1):
             chall.points = int(top)
     return f
 
-def score_five(t1=10, t2=15, t3=20, t4=40, t=2880):
+def score_five(v1=10, v2=15, v3=20, v4=40, t=2880):
     '''Classic five levels (500,400,300,200,100) challenges. 
   Format: five:v1,v2,v3,v4,t
   Points: 500 if Solved(@t) < @v1; 400 if Solved(@t) < @v2; 300 if Solved(@t) < @v3; 200 if Solved(@t) < @v4; 100 otherwise
