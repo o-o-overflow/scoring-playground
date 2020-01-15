@@ -147,7 +147,7 @@ def display(sb, cb, reference, limit):
         empty = "                                    "
         print ("\033[32m #  Score  Team                     Score Solves 1st   Challenge" )
 
-    print ("-------------------------------------------------------------------------------------\033[0m")
+    print ("-------------------------------    --------------------------------------------------\033[0m")
 
     pos = 0
     for i in range(max(len(cb), min(limit,len(sb)))):
@@ -364,7 +364,7 @@ else:
 print ("\033[32mTeams:\033[0m   %d        \033[32mChalls:\033[0m   %d"%(len(config.teams), len(config.challs)))
 if reference:
     print ("\033[32mReference:\033[0m %s (%s)"%(reference_r," ".join(reference[0])))
-print ("\033[32m-------------------------------------------------------------------------------------\033[0m")
+print ("\033[32m-------------------------------    --------------------------------------------------\033[0m")
    
 try:
     challs, teams = load_json(filename, config)
