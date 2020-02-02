@@ -28,7 +28,8 @@ class Chall:
         self.points    = 0
         
     def add_solution(self, team, time):
-        t = int((time - self.open_time)/60)
+        t = int((time - self.open_time)/60); assert t >= 0
+        for oldsolve in self.solved_by: assert t >= oldsolve[1]  # solved_by must be ordered
         self.solved_by.append((team, t))
         if isinstance(team, Team):
             team.solve(self, t, len(self.solved_by))
@@ -67,6 +68,10 @@ class Team:
             return self.solved[-1][1] + self.solved[-1][0].open_time
         except:
             error("%s <---- %s"%(self.name, self.solved))
+
+    def __str__(self):
+        return self.name
+
 
 def save_reference(filename, cmdline, final_ranking, challenges_info):
     with open(filename, 'wb') as f:
@@ -259,7 +264,7 @@ test_condition = None
 ranking_algorithms = [rank_dict['score'], rank_dict['first']]
 score_gen_f =  score_dict['ooo']
 score_params = get_default_params(score_gen_f)
-bonus_f = lambda x,*y: 1
+bonus_f = lambda x,*y,**z: 1
 bonus_params = []
 
 # Parse options
@@ -379,7 +384,7 @@ if test_condition:
     for chall in challs.values():
         score_f(chall)
     for team in teams.values():
-        bonus_f(team, *bonus_params)
+        bonus_f(team, *bonus_params, all_teams=teams, all_challs=challs)
 
     baseline = dict_to_sorted_list(teams, ranking_f)
     baseline = [b.name for b in baseline]
@@ -405,7 +410,7 @@ if test_condition:
                         continue
                 for team in teams.values():
                     team.bonus = 0
-                    bonus_f(team, *bonus_params)
+                    bonus_f(team, *bonus_params, all_teams=teams, all_challs=challs)
                 
                 res = dict_to_sorted_list(teams, ranking_f)
                 res = [r.name for r in res]
@@ -430,7 +435,7 @@ if test_condition:
                         continue
                 for team in teams.values():
                     team.bonus = 0
-                    bonus_f(team, *bonus_params)
+                    bonus_f(team, *bonus_params, all_teams=teams, all_challs=challs)
                 res = dict_to_sorted_list(teams, ranking_f)
                 res = [r.name for r in res]
                 if res.index(test_value) < best_pos:
@@ -461,7 +466,7 @@ if test_condition:
                             continue
                     for team in teams.values():
                         team.bonus = 0
-                        bonus_f(team, *bonus_params)
+                        bonus_f(team, *bonus_params, all_teams=teams, all_challs=challs)
                     res = dict_to_sorted_list(teams, ranking_f)
                     res = [r.name for r in res]
                     if (test_condition[0]=='new' and set(res[:test_value]) != set(baseline[:test_value])) or (test_condition[0]=="change" and res[:test_value] != baseline[:test_value]):
@@ -486,7 +491,7 @@ else:
         score_f(chall)
     for team in teams.values():
         team.bonus = 0
-        bonus_f(team, *bonus_params)
+        bonus_f(team, *bonus_params, all_teams=teams, all_challs=challs)
 
     cboard = dict_to_sorted_list(challs, lambda chall: chall.points)
     sboard = dict_to_sorted_list(teams, ranking_f)

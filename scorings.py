@@ -93,7 +93,7 @@ def rank_ctime(team):
 #                                 BONUS
 # ----------------------------------------------------------------------------
 
-def bonus_firstblood(team, *params):
+def bonus_firstblood(team, *params, **kwargs):
     '''Add a bonus to the first n teams who solved a challenge
        Format: firstblood:x1,x2,..,xn
        Where x can be an absolute value (e.g., 30) or a percentage of the challenge points (e.g., 2.5%)'''
