@@ -152,6 +152,6 @@ def bonus_secondsolve(team, *params, **kwargs):
         bonus = int(bonus)  # Rounds towards 0, intentionally so that "super-easy" challenges don't give first-blood points
         print("[.] Awarding {:4} points ({:4.0%} of {}) for {} to {}, who solved it {} minutes before {}".format(
             bonus, float(bonus)/chall.points, chall.points, chall.name, team.name, delta, sb_team), file=sys.stderr)
-        print(strftime('                  first-blood at %a, %d %b %Y %H:%M:%S %Z', localtime(fb_time*60+chall.open_time)), file=sys.stderr)
-        print('                                 {} minutes after the challenge was opened'.format(fb_time), file=sys.stderr)
+        #print(strftime('                  first-blood at %a, %d %b %Y %H:%M:%S %Z', localtime(fb_time*60+chall.open_time)), file=sys.stderr)
+        #print('                                 {} minutes after the challenge was opened'.format(fb_time), file=sys.stderr)
         team.bonus += bonus
