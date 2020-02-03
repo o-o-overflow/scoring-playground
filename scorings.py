@@ -1,4 +1,5 @@
 import math
+import sys
 
 # ----------------------------------------------------------------------------
 #                             SCORING  FUNCTIONS
@@ -105,3 +106,52 @@ def bonus_firstblood(team, *params, **kwargs):
                 team.bonus += int(params[order-1])
 
 
+def bonus_secondsolve(team, *params, **kwargs):
+    '''Add a first-blood bonus based on the time-delta between the first and second solves
+       Format: pct_per_minute, cap_pct, competition_end_time
+       Default: 0.1%, 100%, +3days
+       pct_per_minute will be multiplied by the time delta (in minutes) and the challenge points.
+       If there's no second-solver, uses the delta to competition_end_time (unix time or +minutes after the first challenge open_time).
+       The last parameter caps the bonus. Defaults to 100% of the challenge points (e.g., it will at most double the value of the challenge)'''
+    all_teams = kwargs['all_teams']; assert all_teams[team.name] is team
+    all_challs = kwargs['all_challs']
+
+    # 1. Parse params
+    x = params[0] if len(params)>0 else 0.1
+    x = float(x) / 100
+    cap = params[1] if len(params)>1 else 100
+    cap = float(cap) / 100
+    p2 = params[2] if len(params)>2 else "+{}".format(3*24*60)  # +3 days default
+    from time import strftime, localtime
+    if isinstance(p2, str) and p2.startswith('+'):
+        # Time relative to the first open
+        # TODO: human-friendly time
+        plusminutes = int(p2[1:])
+        first_open = min(c.open_time for c in all_challs.values())
+        p2 = first_open + 60*plusminutes
+    competition_end_time = int(p2)
+    #print(strftime('[ ] competition_end_time: %a, %d %b %Y %H:%M:%S %Z', localtime(competition_end_time)), file=sys.stderr)
+
+    # 2. Compute the bonus
+    for chall, time, order in team.solved:
+        fb_team, fb_time = chall.first_blood(1)
+        # Is this the team that scored the first blood?
+        if fb_team != team:
+            continue
+        assert fb_time == time; assert order == 1
+        # delta to the second-blood
+        if chall.first_blood(2):
+            sb_team, sb_time = chall.first_blood(2)
+        else:  # If no one else solved it, delta to the competition end
+            sb_team = "EVERYBODY"; assert competition_end_time > chall.open_time
+            sb_time = (competition_end_time - chall.open_time) / 60  # See add_solution
+        delta = int(sb_time - fb_time);  assert delta>=0
+        bonus = x * chall.points * delta; assert bonus>=0
+        if bonus > cap*chall.points: # Cap
+            bonus = cap*chall.points
+        bonus = int(bonus)  # Rounds towards 0, intentionally so that "super-easy" challenges don't give first-blood points
+        print("[.] Awarding {:4} points ({:4.0%} of {}) for {} to {}, who solved it {} minutes before {}".format(
+            bonus, float(bonus)/chall.points, chall.points, chall.name, team.name, delta, sb_team), file=sys.stderr)
+        print(strftime('                  first-blood at %a, %d %b %Y %H:%M:%S %Z', localtime(fb_time*60+chall.open_time)), file=sys.stderr)
+        print('                                 {} minutes after the challenge was opened'.format(fb_time), file=sys.stderr)
+        team.bonus += bonus
