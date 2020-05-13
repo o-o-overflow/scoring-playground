@@ -79,14 +79,14 @@ Teams:   30        Challs:   24
                                       100 1252    0  welcome_to_the_game
 ```
 
-The output is divide in three parts. On the top, you have all the deails of the scoring
+The output is divide in three parts. On the top, you have all the details of the scoring
 algorithms you selected. On the bottom left the actual scoreboard. And on the bottom
 right the list of challenges with their individual score, the number of teams
 who solved them, and the time it took for the first team to do that.
 
-If you now save this ranking by using `-w` option, you can easily print 
-what would have changed by using a different scoring algorithm.
-For instance, let's compare against the exponential decay used by the CCC CTF:
+If you now save this ranking by using the `-w` option, you can easily print 
+the changes with respect to using a different scoring algorithm.
+For instance, let's compare against the exponential decay approach used by the CCC CTF:
 
 ```
 > ./scorep.py -c dc19 -s ccc  data_2019.json
@@ -125,11 +125,12 @@ Reference: dc19 (-w dc19 data_2019.json)
                                                32 - 68  1252    0  welcome_to_the_game
 ```
 
-Not much eh?
+Not much difference, eh?
 
-Basically, only two adjacent teams switched place in the top10.
+Basically, only two adjacent teams switched place in the Top10.
 
-Let's say you now wants to change the first place. That won't be easy.. but after few tries I found 
+Let's say you now want to find something to change the winning team. 
+That won't be easy.. as PPP wins in almost any reasonable setup. But after few tries I found 
 one possible solution. Ranking teams not based on their score, but based only on the number of 
 challenges they solved and break ties not by who score first, but by total cumulative solving time.
 Here it is:
@@ -172,7 +173,14 @@ Reference: dc19 (-w dc19 data_2019.json)
                                               100  ---  1252    0  welcome_to_the_game
 ```
 
-Even with weird approach results in few times moving up and down a bit, but the top ten teams remain largely unmodified!
+What's interesting is that even with this weird approach, few teams move up and
+down a bit, but the teams in the top ten remain largely the same!
+
+It is easy to overestimate the impact of the scoring algorithm on the final
+result (I know because I certainly spent too much time thinking about it). 
+But in reality, it seems like the impact is mostly psychological and 
+the top teams will score equally well no matter how you configure your 
+scoring.
 
 ### Examples (fine grained)
 
@@ -246,9 +254,9 @@ Reference: dc19 (-w dc19 data_2019.json)
 
 ### Examples (just tell me how to win!)
 
-Ok ok. You just want to know how to adjust the parameters to maximize the ranking of your team.
-There is an experimental feature (well, everything is experimental, but this is even more untested)
-to help you with that.
+Ok ok. You just want to know how to adjust the parameters to maximize the ranking of your team,
+and yes - there is an experimental feature (well, everything is
+experimental, but this is even more untested) to help you with that.
 
 The option you are looking for is `-t max:<team_number>`
 For instance, if you want to bruteforce the OOO algorithm's parameters to maximize the position
