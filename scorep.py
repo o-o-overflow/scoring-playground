@@ -149,10 +149,11 @@ def display(sb, cb, reference, limit):
         empty = "                                            "
         print ("\033[32m #  Score  Diff  Team                        Score    Solves 1st   Challenge" )
     else:
-        empty = "                                    "
-        print ("\033[32m #  Score  Team                     Score Solves 1st   Challenge" )
+        empty = "                                            "
+        # print ("\033[32m #  Score  Team                     Score Solves 1st   Challenge" )
+        print ("\033[32m #  Score Solv  Time  Team                  Score Solves 1st   Challenge" )
 
-    print ("-------------------------------    --------------------------------------------------\033[0m")
+    print ("--------------------------------------    ------------------------------------------\033[0m")
 
     pos = 0
     for i in range(max(len(cb), min(limit,len(sb)))):
@@ -172,7 +173,8 @@ def display(sb, cb, reference, limit):
             if reference:
                 col1 = "%2d - \033[35m%5s\033[0m %s %s"%(pos+1, t.get_final_score(), delta, t.name+" "*(26-len(t.name)))
             else:
-                col1 = "%2d - \033[35m%5s\033[0m %s"%(pos+1, t.get_final_score(), t.name+" "*(26-len(t.name)))
+                # col1 = "%2d - \033[35m%5s\033[0m %s"%(pos+1, t.get_final_score(), t.name+" "*(26-len(t.name)))
+                col1 = "%2d - \033[35m%5s\033[0m %d    %d  %s"%(pos+1, t.get_final_score(), len(t.solved), t.get_cumulative_solve_time()/60, t.name+" "*(22-len(t.name)))
 
         col2 = ""
         if i < len(cb):
@@ -369,7 +371,7 @@ else:
 print ("\033[32mTeams:\033[0m   %d        \033[32mChalls:\033[0m   %d"%(len(config.teams), len(config.challs)))
 if reference:
     print ("\033[32mReference:\033[0m %s (%s)"%(reference_r," ".join(reference[0])))
-print ("\033[32m-------------------------------    --------------------------------------------------\033[0m")
+print ("\033[32m-------------------------------------------------------------------------------------\033[0m\n")
    
 try:
     challs, teams = load_json(filename, config)
