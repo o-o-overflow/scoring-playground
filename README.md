@@ -199,6 +199,51 @@ Just run:
 ./scorep.py -c dc19 -s ctfd:100,500,50,2880 data_2019.json
 ```
 
+The last parameter `@time` let you configure how the score of each challenge is updated.
+Basically, it sets an upper limit and only the number of solves in that window are counted.
+So, if you want to see what happens if you decrease the score of a challenge only based to
+the solutions submitted in the first 5 hours (to account for very difficult challenges
+open early in the game), you can run:
+
+```
+./scorep.py -c dc19 -s  ooo:100,500,0.08,1,300 data_2019.json
+-------------------------------=[ Config ]=------------------------------------------
+Scoring: 100 + ( 500 - 100 ) / (1 + 0.08 * Solved(300) * Log (1 * Solved(300)))
+Ranking: score,first
+Bonus:   None
+Teams:   30        Challs:   24
+Reference: dc19 (-w dc19 data_2019.json)
+-------------------------------------------------------------------------------------
+
+ #  Score  Diff  Team                        Score    Solves 1st   Challenge
+--------------------------------------    ------------------------------------------
+ 1 -  7192   ---  PPP                         500 +373    45   49  Return_to_shellQL
+ 2 -  7192   ---  HITCON⚔BFKinesiS            500 +260    10  309  chainedrsa
+ 3 -  6232   1 ▲  Sauercloud                  500 +313    16  408  Hotel-California
+ 4 -  6192   2 ▲  A*0*E                       500 +299    14  190  ASRybaB
+ 5 -  5972   ---  Samurai                     500 +357    30  467  RTOoOS
+ 6 -  5917   1 ▲  SeoulPlusBadAss             500 + 40     2  751  papatrace
+ 7 -  5849   4 ▼  Shellphish                  500 +229     8  420  election_coin
+ 8 -  5692   ---  Tea Deliverers              500  ---     1   23  LCARS333
+ 9 -  5417   ---  CGC                         460 +325    36  117  gloryhost
+10 -  5272   ---  hxp                         460 +304    24  193  LCARS000
+11 -  5232   1 ▲  KaisHack GoN                460 +206     9   35  LCARS022
+12 -  5209   1 ▼  r00timentary                377 +246    40  171  vitor
+13 -  5001   ---  TokyoWesterns               343 +206    34  162  ooops
+14 -  4961   ---  r3kapig                     315 +133    17   74  tania
+15 -  4917   ---  Tasteless                   291 +152    33  156  VeryAndroidoso
+16 -  4732   ---  RPISEC                      271 +129    31   26  mamatrace
+17 -  4646   2 ▲  binja                       271 +109    22  105  shitorrent
+18 -  4646   1 ▼  mhackeroni                  182 + 64    61   78  nodb
+19 -  4457   1 ▼  OpenBlue                    149 + 37    88   40  babyheap
+20 -  3756   1 ▲  NASA_Rejects                147 + 37   102   45  redacted-puzzle
+                                              139 + 25    76   55  babytrace
+                                              122 + 14   122   39  know_your_mem
+                                              104 +  2   390    4  cant_even_unplug_it
+                                              101 +  1  1252    0  welcome_to_the_game
+```
+
+
 ### Examples (just tell me how to win!)
 
 Ok ok. You just want to know how to adjust the parameters to maximize the ranking of your team.
@@ -231,12 +276,14 @@ have won. But as you can imagine, changing the sign does have a large impact on 
 The other option is to score each challenge in the range -16-to-500 (instead of 100-500) which
 basically penalizes teams that solve very easy challenges :D
 
-=== Extending the tool
+### Extending the tool
 
 If you want to add a new algorithm, check `scorings.py`.
 The task is actually quite simple: just add a new function and if it starts with `score_` it
 will be automatically added to the list of available scoring algorithms (same if you start
 with `rank_` or `bonus_`).
+
+If you add support for other major CTF formulas, send me a PR.
 
 
 
