@@ -30,7 +30,7 @@ To compare different outcomes, follow these simple rules:
    the same algorithm and the same parameters we used in the Defcon 2019 quals.
    You can then run `./scorep.py -w dc19 data_2019.json` to save this
    result as a reference file for future comparisons.
-3. Time to play. Run the tool without parameters to see all its option.
+3. Time to play. Run the tool without parameters to see all its options.
 
 
 ### Examples (basic use)
@@ -176,7 +176,74 @@ Even with weird approach results in few times moving up and down a bit, but the 
 
 ### Examples (fine grained)
 
-Let's say you want to make some fine-grained adjustment to a 
+Let's say you want to make some fine-grained adjustment to one of the algorithms. 
+For instance, you want to test CTFd parabolic function, but by tweeking the decay parameter.
+
+First, run the tool without options to see the full help. Here is the snippet we are
+interested in:
+
+```
+  - ctfd  Parabolic function available in ctfd.
+          Format: ctfd:base,top,decay,time
+          Points: max(base, (((base - top)/(decay**2)) * (Solved(@time)**2)) + top)
+          Default value: ctfd:100,500,20,2880
+```
+
+So, we can configure the parameters of each algorithm by passing them after the colon sign.
+In our case, the default is `ctfd:100,500,20,2880` and the decay value is in third position.
+
+You want to see what happens if you set it to 50 instead of 20?
+Just run:
+
+```
+./scorep.py -c dc19 -s ctfd:100,500,50,2880 data_2019.json
+```
+
+### Examples (just tell me how to win!)
+
+Ok ok. You just want to know how to adjust the parameters to maximize the ranking of your team.
+There is an experimental feature (well, everything is experimental, but this is even more untested)
+to help you with that.
+
+The option you are looking for is `-t max:<team_number>`
+For instance, if you want to bruteforce the OOO algorithm's parameters to maximize the position
+of Shellphish, you can do:
+
+```
+> ./scorep.py -c dc19 -t max:3 data_2019.json
+-------------------------------=[ Config ]=------------------------------------------
+Scoring: 100 + ( 500 - 100 ) / (1 + 0.08 * Solved(2880) * Log (1 * Solved(2880)))
+Ranking: score,first
+Bonus:   None
+Teams:   30        Challs:   24
+Reference: dc19 (-w dc19 data_2019.json)
+-------------------------------------------------------------------------------------
+
+Looking for parameters that maximize the final ranking of team: Shellphish
+Initial ranking: 3
+ Param 1 =  -16.00 --> rank 2
+ Param 3 =   -0.12 --> rank 1
+```
+
+The tool tries to bruteforce each parameter in isolation, and reports the best outcome (if any).
+In this case, if in the formula we change the third parameter from 0.08 to -0.12 Shellphish would
+have won. But as you can imagine, changing the sign does have a large impact on the results.
+The other option is to score each challenge in the range -16-to-500 (instead of 100-500) which
+basically penalizes teams that solve very easy challenges :D
+
+=== Extending the tool
+
+If you want to add a new algorithm, check `scorings.py`.
+The task is actually quite simple: just add a new function and if it starts with `score_` it
+will be automatically added to the list of available scoring algorithms (same if you start
+with `rank_` or `bonus_`).
+
+
+
+
+
+
+
 
 
 
