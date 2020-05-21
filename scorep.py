@@ -125,7 +125,9 @@ def load_json(filename, config):
     solves = data['message']['solves']
     tmp    = data['message']['open']
 
-    for name, _a, _b, _c, t in tmp:
+    for _entry in tmp:
+        name = _entry[0]
+        t    = _entry[-1]
         if name not in config.challs:
             continue
         challs[name] = Chall(name, t)

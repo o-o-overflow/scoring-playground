@@ -6,7 +6,7 @@ import sys
 # ----------------------------------------------------------------------------
 
 def score_ooo(base=100, top=500, k=0.08, j=1, time=2880):
-    '''Log-based Decay formula used for the Defcon Quals in 2018 and 2019
+    '''Log-based Decay formula used for the Defcon Quals in 2018, 2019, and 2020.
   Format: ooo:base,top,k,j,time
   Points: @base + ( @top - @base ) / (1 + @k * Solved(@time) * Log (@j * Solved(@time)))
   Default value: ooo:100,500,0.08,1,2880'''
@@ -64,6 +64,20 @@ def score_five(v1=10, v2=15, v3=20, v4=40, t=2880):
         elif n < int(v4): chall.points=200
         else:
             chall.points = 100
+    return f
+
+def score_lin(base=100, top=500, step=8, time=2880):
+    '''Linear Decay formula in which points decrease by a fixed amount for each solve.
+  Format: lin:base,top,step,time
+  Points: max(@base, @top - @step * Solved(@time))
+  Default value: lin:100,500,8,2880'''
+    def f(chall):
+        n = chall.get_solve_count(int(time))
+        p = int(top) - int(step)*n
+        if p<base:
+            chall.points = int(base)
+        else:
+            chall.points = p
     return f
 
 # ----------------------------------------------------------------------------
