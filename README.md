@@ -26,9 +26,9 @@ To compare different outcomes, follow these simple rules:
    respectively, the list of teams and challenges you want to work with.
    By default, the tool simulates the top 30 teams and all challenges
    except the _speedrun_.
-2. Run `./scorep.py data_2019.json` to print the final scoreboard obtained by
+2. Run `./scorep.py data/dcquals_2019.json` to print the final scoreboard obtained by
    the same algorithm and the same parameters we used in the Defcon 2019 quals.
-   You can then run `./scorep.py -w dc19 data_2019.json` to save this
+   You can then run `./scorep.py -w dc19 data/dcquals_2019.json` to save this
    result as a reference file for future comparisons.
 3. Time to play. Run the tool without parameters to see all its options.
 
@@ -44,7 +44,7 @@ points to certain teams).
 So, let's just see the results according to the OOO algorithms:
 
 ```
-> ./scorep.py data_2019.json
+> ./scorep.py data/dcquals_2019.json
 -------------------------------=[ Config ]=------------------------------------------
 Scoring: 100 + ( 500 - 100 ) / (1 + 0.08 * Solved(2880) * Log (1 * Solved(2880)))
 Ranking: score,first
@@ -89,13 +89,13 @@ the changes with respect to using a different scoring algorithm.
 For instance, let's compare against the exponential decay approach used by the CCC CTF:
 
 ```
-> ./scorep.py -c dc19 -s ccc  data_2019.json
+> ./scorep.py -c dc19 -s ccc  data/dcquals_2019.json
 -------------------------------=[ Config ]=------------------------------------------
 Scoring: 30 + ( 500 - 30 ) / (1 + (max(0, Solved(2880)-1)/ 11.92201) ** 1.206069)
 Ranking: score,first
 Bonus:   None
 Teams:   30        Challs:   24
-Reference: dc19 (-w dc19 data_2019.json)
+Reference: dc19 (-w dc19 data/dcquals_2019.json)
 -------------------------------    --------------------------------------------------
  #  Score  Diff  Team                        Score    Solves 1st   Challenge
 -------------------------------    --------------------------------------------------
@@ -136,13 +136,13 @@ challenges they solved and break ties not by who score first, but by total cumul
 Here it is:
 
 ```
-> ./scorep.py -c dc19 -r solved,ctime data_2019.json
+> ./scorep.py -c dc19 -r solved,ctime data/dcquals_2019.json
 -------------------------------=[ Config ]=------------------------------------------
 Scoring: 100 + ( 500 - 100 ) / (1 + 0.08 * Solved(2880) * Log (1 * Solved(2880)))
 Ranking: solved,ctime
 Bonus:   None
 Teams:   30        Challs:   24
-Reference: dc19 (-w dc19 data_2019.json)
+Reference: dc19 (-w dc19 data/dcquals_2019.json)
 -------------------------------------------------------------------------------------
 
  #  Score  Diff  Team                        Score    Solves 1st   Challenge
@@ -204,7 +204,7 @@ You want to see what happens if you set it to 50 instead of 20?
 Just run:
 
 ```
-./scorep.py -c dc19 -s ctfd:100,500,50,2880 data_2019.json
+./scorep.py -c dc19 -s ctfd:100,500,50,2880 data/dcquals_2019.json
 ```
 
 The last parameter `@time` let you configure how the score of each challenge is updated.
@@ -214,13 +214,13 @@ the solutions submitted in the first 5 hours (to account for very difficult chal
 open early in the game), you can run:
 
 ```
-./scorep.py -c dc19 -s  ooo:100,500,0.08,1,300 data_2019.json
+./scorep.py -c dc19 -s  ooo:100,500,0.08,1,300 data/dcquals_2019.json
 -------------------------------=[ Config ]=------------------------------------------
 Scoring: 100 + ( 500 - 100 ) / (1 + 0.08 * Solved(300) * Log (1 * Solved(300)))
 Ranking: score,first
 Bonus:   None
 Teams:   30        Challs:   24
-Reference: dc19 (-w dc19 data_2019.json)
+Reference: dc19 (-w dc19 data/dcquals_2019.json)
 -------------------------------------------------------------------------------------
 
  #  Score  Diff  Team                        Score    Solves 1st   Challenge
@@ -263,13 +263,13 @@ For instance, if you want to bruteforce the OOO algorithm's parameters to maximi
 of Shellphish, you can do:
 
 ```
-> ./scorep.py -c dc19 -t max:3 data_2019.json
+> ./scorep.py -c dc19 -t max:3 data/dcquals_2019.json
 -------------------------------=[ Config ]=------------------------------------------
 Scoring: 100 + ( 500 - 100 ) / (1 + 0.08 * Solved(2880) * Log (1 * Solved(2880)))
 Ranking: score,first
 Bonus:   None
 Teams:   30        Challs:   24
-Reference: dc19 (-w dc19 data_2019.json)
+Reference: dc19 (-w dc19 data/dcquals_2019.json)
 -------------------------------------------------------------------------------------
 
 Looking for parameters that maximize the final ranking of team: Shellphish
