@@ -194,7 +194,7 @@ def display(sb, cb, reference, limit):
 
             fblood = "%4d"%cb[i].first_blood()[1] if cb[i].first_blood() else " -  " 
             if reference:
-                col2 = "%4d %s  %4d %4d  %s"%(score, delta, cb[i].get_solve_count(), cb[i].first_blood()[1], name)
+                col2 = "%4d %s  %s %s %s"%(score, delta, cb[i].get_solve_count(), fblood, name)
             else:
                 col2 = "%4d %4d %s  %s"%(score, cb[i].get_solve_count(), fblood, name)
 
