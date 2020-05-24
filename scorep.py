@@ -90,7 +90,7 @@ def load_config(basename):
     try:
         for line in open(basename+'.teams'):
             line = line.strip()
-            if line.startswith('#'):
+            if len(line)==0 or line.startswith('#'):
                 continue
             if line.startswith('"'):
                 if not line.endswith('"'):
@@ -176,7 +176,7 @@ def display(sb, cb, reference, limit):
                 col1 = "%2d - \033[35m%5s\033[0m %s %s"%(pos+1, t.get_final_score(), delta, t.name+" "*(26-len(t.name)))
             else:
                 # col1 = "%2d - \033[35m%5s\033[0m %s"%(pos+1, t.get_final_score(), t.name+" "*(26-len(t.name)))
-                col1 = "%2d - \033[35m%5s\033[0m %d    %d  %s"%(pos+1, t.get_final_score(), len(t.solved), t.get_cumulative_solve_time()/60, t.name+" "*(22-len(t.name)))
+                col1 = "%2d - \033[35m%5s\033[0m %2d    %3d  %s"%(pos+1, t.get_final_score(), len(t.solved), t.get_cumulative_solve_time()/60, t.name+" "*(22-len(t.name)))
 
         col2 = ""
         if i < len(cb):
@@ -192,10 +192,11 @@ def display(sb, cb, reference, limit):
             except:
                 delta = ' ?  '
 
+            fblood = "%4d"%cb[i].first_blood()[1] if cb[i].first_blood() else " -  " 
             if reference:
                 col2 = "%4d %s  %4d %4d  %s"%(score, delta, cb[i].get_solve_count(), cb[i].first_blood()[1], name)
             else:
-                col2 = "%4d %4d %4d  %s"%(score, cb[i].get_solve_count(), cb[i].first_blood()[1], name)
+                col2 = "%4d %4d %s  %s"%(score, cb[i].get_solve_count(), fblood, name)
 
         print ("%s %s"%(col1, col2))
         pos += 1
@@ -211,7 +212,7 @@ def usage():
     print ("  -b ???               \033[33m # Select and configure the *Bonus* algorithm  \033[0m ")  
     print ("  -w <filename>        \033[33m # Save the result to a file for later comparison\033[0m ")  
     print ("  -c <filename>        \033[33m # Compare ranking against previous result\033[0m ")  
-    print ("  -l <n>               \033[33m # Limit the scoreboard to the top <n> places\033[0m ")  
+    print ("  -l <n>               \033[33m # Limit the scoreboard to the top <n> places (default=20)\033[0m ")  
     print ("  -t [max|change|new]:n\033[33m # Automatically test different values for the scoring parameters\033[0m ")  
     print ("\n\033[32mRanking Algorithms:\033[0m")
     print (" Comma-separated list of algorithms. First ranking algorithm is applied first, in case of ties,")
