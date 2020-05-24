@@ -84,11 +84,11 @@ def load_reference(filename):
     # except:
         # error("could not load reference score from %s"%filename)
 
-def load_config():
+def load_config(basename):
     config = namedtuple('Config', 'teams challs')(teams=[], challs=[])
     lineno = 1
     try:
-        for line in open('teams.conf'):
+        for line in open(basename+'.teams'):
             line = line.strip()
             if line.startswith('#'):
                 continue
@@ -99,10 +99,10 @@ def load_config():
             config.teams.append(line)
             lineno +=1
     except:
-        error("unable to load teams.conf")
+        error("unable to load %s.teams"%basename)
     lineno = 1
     try:
-        for line in open('challs.conf'):
+        for line in open(basename+'.challs'):
             line = line.strip()
             if line.startswith('#'):
                 continue
@@ -113,7 +113,7 @@ def load_config():
             config.challs.append(line)
             lineno +=1
     except:
-        error("unable to load challs.conf")
+        error("unable to load %s.challs"%basename)
     return config
 
 def load_json(filename, config):
@@ -124,7 +124,7 @@ def load_json(filename, config):
         data   = json.load(f)
     solves = data['message']['solves']
     tmp    = data['message']['open']
-
+    
     for _entry in tmp:
         name = _entry[0]
         t    = _entry[-1]
@@ -359,7 +359,11 @@ ranking_f = lambda team: [s(team) for s in ranking_algorithms]
 formula = [x[10:] for x in score_gen_f.__doc__.split('\n') if x.strip().startswith("Points:")][0]
 spec = inspect.getfullargspec(score_gen_f)
 
-config = load_config()
+if filename.endswith(".json"):
+    basename = filename[:-5]
+else:
+    basename = filename
+config = load_config(basename)
 
 for i in range(len(spec.args)):
     formula = formula.replace("@%s"%spec.args[i], "%s"%score_params[i])

@@ -58,10 +58,10 @@ def score_five(v1=10, v2=15, v3=20, v4=40, t=2880):
   Default: five:10,15,20,40,0'''
     def f(chall):
         n = chall.get_solve_count(int(t))
-        if   n < int(v1): chall.points=500
-        elif n < int(v2): chall.points=400
-        elif n < int(v3): chall.points=300
-        elif n < int(v4): chall.points=200
+        if   n <= int(v1): chall.points=500
+        elif n <= int(v2): chall.points=400
+        elif n <= int(v3): chall.points=300
+        elif n <= int(v4): chall.points=200
         else:
             chall.points = 100
     return f
