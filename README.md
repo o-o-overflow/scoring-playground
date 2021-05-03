@@ -16,9 +16,9 @@ So, now go ahead and customize the scoring system the way you prefer.
 
 ### Howto 
 
-This project includes a `json` file with all successful submissions of 
-the Defcon CTF Quals 2019 and a python script to test different scoring
-systems.
+This appliction allows you to test different scoring
+systems and in the `data` directory you find several `json` files (with all successful 
+flag submissions of the Defcon CTF Quals from 2019 to 2021) to play with.
 
 To compare different outcomes, follow these simple rules:
 
